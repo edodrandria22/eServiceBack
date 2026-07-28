@@ -16,10 +16,8 @@ class Fichiers extends BaseEntite
     private ?string $type = null;
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private $binaire = null;
+    private mixed $binaire = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $dateFin = null;
 
 
     // ----- Getters & Setters -----
@@ -51,20 +49,9 @@ class Fichiers extends BaseEntite
         return $this->binaire;
     }
 
-    public function setBinaire($binaire): static
+    public function setBinaire(mixed $binaire): static
     {
         $this->binaire = $binaire;
-        return $this;
-    }
-
-    public function getDateFin(): ?\DateTimeInterface
-    {
-        return $this->dateFin;
-    }
-
-    public function setDateFin(?\DateTimeInterface $dateFin): static
-    {
-        $this->dateFin = $dateFin;
         return $this;
     }
 

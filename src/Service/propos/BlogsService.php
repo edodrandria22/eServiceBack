@@ -3,6 +3,9 @@
 namespace App\Service\propos;
 
 use App\Dto\propos\BlogsDto;
+use App\Dto\utils\JoinCriteria;
+use App\Dto\utils\OrderCriteria;
+use App\Dto\utils\PaginationCriteria;
 use App\Entity\propos\Blogs;
 use App\Repository\propos\BlogsRepository;
 use App\Service\utils\BaseService;
@@ -26,8 +29,19 @@ class BlogsService extends BaseService
     {
         return $this->repository;
     }
+    public function getPaginated(OrderCriteria $orderCriteria, PaginationCriteria $paginationCriteria , array $joins = []) : array
+    {
+        $joins = [
+        new JoinCriteria(
+                'm.image', // relation depuis l'alias principal "m"
+                'i',       // alias du join
+                'LEFT'
+            )
+        ];
+        return $this->repository->getPaginated($orderCriteria, $paginationCriteria, $joins);
+    }
 
-    public function saveDto(BlogsDto $dto,UploadedFile $file): Blogs
+    public function saveDto(BlogsDto $dto,?UploadedFile $file): Blogs
     {
         $this->em->getConnection()->beginTransaction();
         try {
@@ -35,8 +49,10 @@ class BlogsService extends BaseService
             $blog->setTitle($dto->title);
             $blog->setDescription($dto->description);
 
-            $fichier = $this->fichiersService->saveToBlob($file);
-            $blog->setImage($fichier);
+            if ($file) {
+                $fichier = $this->fichiersService->saveToBlob($file);
+                $blog->setImage($fichier);
+            }
 
             $this->save($blog);
             $this->em->getConnection()->commit();

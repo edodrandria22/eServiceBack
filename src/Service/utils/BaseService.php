@@ -100,9 +100,9 @@ abstract class BaseService
     ): mixed {
         return $this->getRepository()->aggregate($function, $field, $conditions, $joins);
     }
-    public function getPaginated(OrderCriteria $orderCriteria,PaginationCriteria $paginationCriteria): array
+    public function getPaginated(OrderCriteria $orderCriteria,PaginationCriteria $paginationCriteria,array $joins = []): array
     {
-        return $this->getRepository()->getPaginated($orderCriteria, $paginationCriteria);
+        return $this->getRepository()->getPaginated($orderCriteria, $paginationCriteria, $joins);
     }
 
 }

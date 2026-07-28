@@ -90,12 +90,12 @@ abstract class BaseRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getSingleScalarResult();
     }
-    public function getPaginated(OrderCriteria $orderCriteria,PaginationCriteria $paginationCriteria): array
+    public function getPaginated(OrderCriteria $orderCriteria,PaginationCriteria $paginationCriteria,array $joins = []): array
     {
         $conditions = [
                 new ConditionCriteria($orderCriteria->getField()[0], $paginationCriteria->getValue(), '<'),
             ];
-        return $this->search($conditions, $orderCriteria, $paginationCriteria);
+        return $this->search($conditions, $orderCriteria, $paginationCriteria, $joins);
     }
 
     private function applyJoins(QueryBuilder $qb, array $joins): void
