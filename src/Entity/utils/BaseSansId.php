@@ -3,6 +3,7 @@
 namespace App\Entity\utils;
 
 use Doctrine\ORM\Mapping as ORM;
+use App\Dto\utils\FieldsCriteria;
 
 #[ORM\MappedSuperclass]
 #[ORM\HasLifecycleCallbacks]
@@ -77,8 +78,6 @@ abstract class BaseSansId
                 continue;
             }
 
-            $property->setAccessible(true);
-
             if (!$property->isInitialized($this)) {
                 continue;
             }
@@ -95,6 +94,44 @@ abstract class BaseSansId
             }
 
             $data[$propertyName] = $value;
+        }
+
+        return $data;
+    }
+    /**
+     * @param FieldsCriteria[] $fields
+     */
+    public function toArrayFields(array $fields): array
+    {
+        $reflection = new \ReflectionClass(static::class);
+        $data = [];
+
+        foreach ($fields as $fieldCriteria) {
+            $propertyName = $fieldCriteria->getField();
+            $outputName = $fieldCriteria->getValue();
+
+            if (!$reflection->hasProperty($propertyName)) {
+                continue;
+            }
+
+            $property = $reflection->getProperty($propertyName);
+
+            if (!$property->isInitialized($this)) {
+                continue;
+            }
+
+            $value = $property->getValue($this);
+
+            if ($value instanceof \DateTimeInterface) {
+                $data[$outputName] = $value->format('Y-m-d H:i:s');
+                continue;
+            }
+
+            if (is_object($value) || is_resource($value)) {
+                continue;
+            }
+
+            $data[$outputName] = $value;
         }
 
         return $data;

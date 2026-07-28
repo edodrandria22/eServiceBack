@@ -8,8 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Annotation\TokenRequired;
 use App\Dto\propos\ContactsDto;
-use App\Dto\utils\OrderCriteria;
-use App\Dto\utils\PaginationCriteria;
 use App\Service\propos\ContactsService;
 use DateTimeImmutable;
 
@@ -30,12 +28,8 @@ class ContactsController extends BaseApiController
             $date = $dateParam ? new DateTimeImmutable($dateParam) : new DateTimeImmutable();
             $limitParam = $request->query->get('limit');
             $limit = $limitParam ? (int)$limitParam : ($_ENV['LIMIT_PAGINATIONS'] ?? 10);
-            $paginationCriteria = new PaginationCriteria($date, $limit);
-            $orderCriteria = new OrderCriteria();
-            $contacts = $this->contactsService->getPaginated($orderCriteria, $paginationCriteria);
-            $excludes = ['deletedAt'];
-            $data = $this->contactsService->transformerArray($contacts, $excludes);
             
+            $data = $this->contactsService->getPaginatedJson($date, $limit);
             return $this->jsonSuccess($data);
 
         } catch (\Exception $e) {

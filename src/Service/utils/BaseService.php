@@ -65,6 +65,16 @@ abstract class BaseService
 
         return $items;
     }
+    public function transformerArrayFields(array $entities, array $fields): array
+    {
+        $items = [];
+        
+        foreach ($entities as $entity) {
+            $items[] = $entity->toArrayFields($fields);
+        }
+
+        return $items;
+    }
     public function save(object $entity, bool $flush = true): object
     {
         $this->em->persist($entity);

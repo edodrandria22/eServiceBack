@@ -2,11 +2,13 @@
 
 namespace App\Entity\propos;
 
+use App\Dto\utils\FieldsCriteria;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 use App\Entity\utils\BaseEntite;
 use App\Entity\utils\Fichiers;
 use App\Repository\propos\BlogsRepository;
+use Override;
 
 #[ORM\Entity(repositoryClass: BlogsRepository::class)]
 class Blogs extends BaseEntite
@@ -56,6 +58,16 @@ class Blogs extends BaseEntite
         $data = parent::toArray($exclude);
         if ($this->image) {
             $data['image'] = $this->image->toArray($exclude);
+        }
+        return $data;
+    }
+    #[Override]
+    public function toArrayFields(array $fields): array
+    {
+        $data = parent::toArrayFields($fields);
+        if ($this->image) {
+            $imageFields = [new FieldsCriteria('id'), new FieldsCriteria('nom'), new FieldsCriteria('type'), new FieldsCriteria('type')];
+            $data['image'] = $this->image->toArrayFields($imageFields);
         }
         return $data;
     }

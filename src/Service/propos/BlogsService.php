@@ -3,6 +3,7 @@
 namespace App\Service\propos;
 
 use App\Dto\propos\BlogsDto;
+use App\Dto\utils\FieldsCriteria;
 use App\Dto\utils\JoinCriteria;
 use App\Dto\utils\OrderCriteria;
 use App\Dto\utils\PaginationCriteria;
@@ -11,6 +12,7 @@ use App\Repository\propos\BlogsRepository;
 use App\Service\utils\BaseService;
 use App\Service\utils\FichiersService;
 use App\Service\utils\ValidationService;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -62,6 +64,29 @@ class BlogsService extends BaseService
             $this->em->getConnection()->rollBack();
             throw $th;
         }
+    }
+    public function getPaginatedJson(DateTimeImmutable $date, int $limit): array
+    {
+        $paginationCriteria = new PaginationCriteria($date, $limit);
+        $orderCriteria = new OrderCriteria();
+        $blogs = $this->getPaginated($orderCriteria, $paginationCriteria);
+        $fields = [
+            new FieldsCriteria('id'),
+            new FieldsCriteria('title'),
+            new FieldsCriteria('description'),
+            new FieldsCriteria('createdAt', 'date_publication'),
+        ];
+        return $this->transformerArrayFields($blogs, $fields);
+    }
+    public function toArray(Blogs $blog): array
+    {
+        $fields = [
+            new FieldsCriteria('id'),
+            new FieldsCriteria('title'),
+            new FieldsCriteria('description'),
+            new FieldsCriteria('createdAt', 'date_publication'),
+        ];
+        return $this->transformerArrayFields([$blog], $fields)[0];
     }
     
 }
