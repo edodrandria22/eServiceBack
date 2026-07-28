@@ -26,9 +26,12 @@ class FichiersService
         $fichier->setNom($file->getClientOriginalName())
             ->setType($file->getMimeType())
             ->setBinaire($binaryContent);
-
+        $this->em->persist($fichier);
+        $this->em->flush();
         return $fichier;
     }
+    
+    
     // public function persistFiles(array $files, Messages $message): array
     // {
     //     $result =[];

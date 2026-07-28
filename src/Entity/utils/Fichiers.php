@@ -71,6 +71,6 @@ class Fichiers extends BaseEntite
     public function toArray(array $exclude = []): array
     {
         // Le binaire n'est jamais inclus dans le JSON — utiliser /fichiers/{id}/download
-        return parent::toArray(array_merge($exclude, ['binaire', 'message']));
+        return parent::toArray(array_merge($exclude, ['binaire']));
     }
 }

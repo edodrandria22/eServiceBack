@@ -55,7 +55,6 @@ abstract class BaseRepository extends ServiceEntityRepository
      * @param OrderCriteria|null $order
      * @param PaginationCriteria|null $pagination
      * @param JoinCriteria[] $joins
-     * @param array $distinct
      * 
      * @return array
      */
@@ -63,8 +62,7 @@ abstract class BaseRepository extends ServiceEntityRepository
         array $conditions = [],
         ?OrderCriteria $order = null,
         ?PaginationCriteria $pagination = null,
-        array $joins = [],
-        array $distinct = []
+        array $joins = []
     ): array {
         $qb = $this->createQueryBuilder('m');
 
@@ -91,6 +89,13 @@ abstract class BaseRepository extends ServiceEntityRepository
         $this->applyDeletedAtFilter($qb);
 
         return $qb->getQuery()->getSingleScalarResult();
+    }
+    public function getPaginated(OrderCriteria $orderCriteria,PaginationCriteria $paginationCriteria): array
+    {
+        $conditions = [
+                new ConditionCriteria($orderCriteria->getField()[0], $paginationCriteria->getValue(), '<'),
+            ];
+        return $this->search($conditions, $orderCriteria, $paginationCriteria);
     }
 
     private function applyJoins(QueryBuilder $qb, array $joins): void

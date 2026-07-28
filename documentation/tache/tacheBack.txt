@@ -1,14 +1,19 @@
 eService
-login(email,mdp) -- ok --30mn
-    utilisateur(email,mdp,nom,prenom)
-    fonction 
-        login(nom,prenom) 
+27/07/2026
+    ---login(email,mdp) -- ok --30mn
+        utilisateur(email,mdp,nom,prenom)
+        fonction 
+            login(nom,prenom) 
 
-contacts(nom,email,message,numero)
-    --inserer nouvelles contacts 
-        dto -- a faire --10mn
-        service -- a faire --10mn
-blog(image , titre, description ,date)
+    ---contacts(nom,email,message,numero) -- ok
+        --inserer nouvelles contacts 
+            dto -- a faire --10mn
+            service -- a faire --10mn
+
+28/07/2026
+    --pagination pour les contacts  -- ok -- 20mn
+    --crud pour le blogs a faire --60mn
+       ---blog(image , titre, description ,date)
 
 
 NSERAY27

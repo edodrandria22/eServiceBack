@@ -7,21 +7,21 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Annotation\TokenRequired;
-use App\Dto\propos\ContactsDto;
+use App\Dto\propos\BlogsDto;
 use App\Dto\utils\OrderCriteria;
 use App\Dto\utils\PaginationCriteria;
-use App\Service\propos\ContactsService;
+use App\Service\propos\BlogsService;
 use DateTimeImmutable;
 
-#[Route('/contacts')]
-class ContactsController extends BaseApiController
+#[Route('/blogs')]
+class BlogsController extends BaseApiController
 {
-    private ContactsService $contactsService;
-    public function __construct(ContactsService $contactsService)
+    private BlogsService $blogsService;
+    public function __construct(BlogsService $blogsService)
     {
-        $this->contactsService = $contactsService;
+        $this->blogsService = $blogsService;
     }
-    #[Route('', name: 'get_all_contacts', methods: ['GET'])]
+    #[Route('', name: 'get_all_blogs', methods: ['GET'])]
     // #[TokenRequired]
     public function getAllContacts(Request $request): JsonResponse
     {
@@ -32,9 +32,9 @@ class ContactsController extends BaseApiController
             $limit = $limitParam ? (int)$limitParam : ($_ENV['LIMIT_PAGINATIONS'] ?? 10);
             $paginationCriteria = new PaginationCriteria($date, $limit);
             $orderCriteria = new OrderCriteria();
-            $contacts = $this->contactsService->getPaginated($orderCriteria, $paginationCriteria);
+            $blogs = $this->blogsService->getPaginated($orderCriteria, $paginationCriteria);
             $excludes = ['deletedAt'];
-            $data = $this->contactsService->transformerArray($contacts, $excludes);
+            $data = $this->blogsService->transformerArray($blogs, $excludes);
             
             return $this->jsonSuccess($data);
 
@@ -44,16 +44,17 @@ class ContactsController extends BaseApiController
 
     }
 
-    #[Route('', name: 'create_contact', methods: ['POST'])]
+    #[Route('', name: 'create_blog', methods: ['POST'])]
     // #[TokenRequired]
-    public function createContact(Request $request): JsonResponse
+    public function createBlog(Request $request): JsonResponse
     {
         try {
-            $dto = $this->deserializeAndValidate(
+            $dto = $this->deserializeFormDataAndValidate(
                 $request,
-                ContactsDto::class
+                BlogsDto::class
             );
-            $user = $this->contactsService->saveDto($dto);
+            $uploadedFile = $request->files->get('fichier');
+            $user = $this->blogsService->saveDto($dto, $uploadedFile);
             
            $excludes = ['createdAt', 'deletedAt'];
             $data = $user->toArray($excludes);
@@ -69,10 +70,10 @@ class ContactsController extends BaseApiController
     public function getOneUser(int $id): JsonResponse
     {
         try {
-            $user =$this->contactsService->getById($id);
+            $user =$this->blogsService->getById($id);
 
             if (!$user) {
-                return $this->jsonError('Contact non trouvé', 404);
+                return $this->jsonError('Blog non trouvé', 404);
             }
 
             $excludes = ['createdAt', 'deletedAt'];

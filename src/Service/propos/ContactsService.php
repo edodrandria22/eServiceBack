@@ -22,8 +22,6 @@ class ContactsService extends BaseService
     {
         return $this->repository;
     }
-
-   
     public function saveDto(ContactsDto $dto): Contacts
     {
         $contact = new Contacts();
