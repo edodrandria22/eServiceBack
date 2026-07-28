@@ -97,7 +97,9 @@ abstract class BaseRepository extends ServiceEntityRepository
             ];
         return $this->search($conditions, $orderCriteria, $paginationCriteria, $joins);
     }
-
+    /**
+     * @param JoinCriteria[] $joins
+     */
     private function applyJoins(QueryBuilder $qb, array $joins): void
     {
         

@@ -12,8 +12,12 @@ eService
 
 28/07/2026
     --pagination pour les contacts  -- ok -- 20mn
-    --crud pour le blogs a faire --60mn
+    --crud pour le blogs ok --60mn
        ---blog(image , titre, description ,date)
+    --fonction generaliser pour toArrayFields -- ok -- 120mn
+        --creer entite FieldsCritaria 
+        --creer toArrayFields
+        --creer service
 
 
 NSERAY27
